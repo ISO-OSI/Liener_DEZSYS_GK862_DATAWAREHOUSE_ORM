@@ -1,117 +1,465 @@
 # DEZSYS_GK81_WAREHOUSE_ORM
 
-Join GitHub Repo: https://github.com/ThomasMicheler/DEZSYS_GK862_DATAWAREHOUSE_ORM.git
-   
-This lesson introduces the data accessing model in Spring and the basics of Object Relational Mapping (ORM).
+This project is a small Spring Boot application for the ORM exercise.
 
-## Introduction
+It started with the Spring tutorial "Accessing data with MySQL". The tutorial
+only had a simple `User` entity. I kept this part in the project and then added
+a small data warehouse model with warehouses, products and purchases.
 
-This exercise is intended to demonstrate the interaction between a programming language (Java) and a persistance layer (MySQL, PostgreSQL).
+The project uses:
 
-First you should follow the Spring tutorial ["Accessing data with MySQL"](https://spring.io/guides/gs/accessing-data-mysql) and document all important steps in your protocol. Don't forget to make notes about all problems occured during the setup. Afterwards you should extend the data model of the example and adapt it for a Data Warehouse application (data structure see below). One relation between the entities Datawarehouse and Products is required in this example. Please read the documentation how you implementation entity relations using the ORM model.
+* Java
+* Spring Boot
+* Spring Data JPA
+* Hibernate
+* MySQL
+* Gradle
 
-Document all individual implementation steps and any problems that arise in a log (Markdown).  
-Create a GITHUB repository for this project and add the link to it in the comments.
+## How to run the project
 
-## Requirements
+First a MySQL server must be running. The application expects a database called
+`example`.
 
-*   MySQL DMS
-     *  Local MySQL Service   
-     *  MySQL Docker Container
-*   Gradle 8 or higher  
-*   Java SDK 18 or higher  
-     
-## Data Structure - Data Warehouse
+Example MySQL commands:
+
+```sql
+create database example;
+use example;
+show tables;
 ```
-<warehouseData>
-    <warehouseID>001</warehouseID>
-    <warehouseName>Linz Bahnhof</warehouseName>
-    <warehouseAddress>Bahnhofsstrasse 27/9</warehouseAddress>
-    <warehousePostalCode>Linz</warehousePostalCode>
-    <warehouseCity>Linz</warehouseCity>
-    <warehouseCountry>Austria</warehouseCountry>
-    <timestamp>2021-09-12 08:52:39.077</timestamp>
-    <productData>
-         <product>
-             <productID>00-443175</productID>
-             <productName>Bio Orangensaft Sonne</productName>
-             <productCategory>Getraenk</productCategory>
-             <productQuantity>2500</productQuantity>
-             <productUnit>Packung 1L</productUnit>
-         </product>
-         <product>
-             <productID>00-871895</productID>
-             <productName>Bio Apfelsaft Gold</productName>
-             <productCategory>Getraenk</productCategory>
-             <productQuantity>3420</productQuantity>
-             <productUnit>Packung 1L</productUnit>
-         </product>
-    </productData>
-</warehouseData>
+
+The connection is configured in:
+
+```text
+src/main/resources/application.properties
 ```
-## Important Commands. 
 
-*   Use gradle to build the application  
-     `gradle clean`   
-     `gradle bootRun`   
+Current database settings:
 
-*   Connect to MySQL Shell  
-     `mysqlsh <username>@localhost`   
+```properties
+spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/example
+spring.datasource.username=root
+spring.datasource.password=
+```
 
-*   MySQL Shell Commands  
-     `show databases; // list all local databases `   
-     `use example;  // switch to a local database "example" `   
-     `show tables;           // list all of current database   `   
-     `create table example;   // create a SQL table with the name "example"   ` 
+If your MySQL user or password is different, change these values.
 
-## Assessment
+Run the project with the Gradle wrapper:
 
-- Group size: 1 Person.  
-- Result by protocol and delivery meeting (in English). 
-- Requirements **Grundlagen**. 
-    * Answer the questions below about the ORM framework.  
-    * Use the tutorial ["Accessing data with MySQL"](https://spring.io/guides/gs/accessing-data-mysql) 
-    * Implement the MySQL example with the User database 
-    * Create a new user record (eg. curl -X POST "http://localhost:8080/demo/add" -d "name=John" -d "email=john@example.com")
-    * Document each single development step in your protocol and describe the most important code snippets in few sentences. Furthermore, the output of the application and any problems that occur should be documented in submission document.
-    * Customize the data model for the Data Warehouse application (min. 2 entities with 1 relation).  
-    * Insert following records: 2 Data Warehouse records, 10 Product records.  
-    * Document which parts of the program need to be adapted   
-*  Extended Requirements **Erweiterte Grundlagen**
-   *   Find out which methods are available for the CrudRepository to collect data   
-        https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html.    
-   *  Extend the Data Warehouse repository with following functionalities:   
-       * Collect all data of one data warehouse specified by datawarehouseID.  
-       * Collect a single product of a data warehouse specified by datawarehouseID and productID.  
-       * Update a data warehouse using datawarehouseID. 
-   * Document the parts of your project which have to be extend
-   * Extend the data model with data about the customer purchases for a product and warehouse locations (eg. records for sold products like data/time, amount, location/warehouse)
-   * Insert 30 records for sold products
-*  Extended Requirements **Vertiefung**  
-   * Create 250-300 training records (products, purchases)
-   * Connect your application with an LLM (local eg. Ollama, cloud-based eg. Google Gemini) and generate a preview of sales numgers for the all warehouses and products over the coming months.
+```bash
+./gradlew bootRun
+```
 
+On Windows:
 
-## Questions
+```bash
+.\gradlew.bat bootRun
+```
 
-* What is ORM and how is JPA used?  
-* What is the application.properties used for and where must it be stored?  
-* Which annotations are frequently used for entity types? Which key points must be observed?   
-* What methods do you need for CRUD operations?  
+The application starts on:
 
-## Links & Further Resources
+```text
+http://localhost:8080
+```
 
-* Object Relational Mapping (ORM) Data Access:   
-   https://docs.spring.io/spring-framework/reference/data-access/orm.html
-* Accessing data with MySQL.  
-   https://spring.io/guides/gs/accessing-data-mysql
-* Accessing Data with JPA   
-   https://spring.io/guides/gs/accessing-data-jpa
-* Difference between Hibernate and Spring Data:  
-   https://dzone.com/articles/what-is-the-difference-between-hibernate-and-sprin-1
-* Introduction Hibernate:   
-   https://vicksheet.medium.com/getting-started-with-hibernate-an-introduction-to-the-orm-framework-for-java-applications-fd97af01b7a6
-* Video:   
-   https://www.youtube.com/watch?v=NC-1j1grMPI&ab_channel=ManningPublications
+## How to test it
 
-FINAL
+The old tutorial endpoint is still there:
+
+```bash
+curl -X POST "http://localhost:8080/demo/add" -d "name=John" -d "email=john@example.com"
+curl "http://localhost:8080/demo/all"
+```
+
+Warehouse endpoints:
+
+```bash
+curl "http://localhost:8080/demo/warehouses"
+curl "http://localhost:8080/demo/warehouses/001"
+curl "http://localhost:8080/demo/warehouses/001/products"
+curl "http://localhost:8080/demo/warehouses/001/products/00-443175"
+```
+
+Update one warehouse:
+
+```bash
+curl -X PUT "http://localhost:8080/demo/warehouses/001" -d "warehouseName=Linz Main Station"
+```
+
+Other endpoints:
+
+```bash
+curl "http://localhost:8080/demo/products"
+curl "http://localhost:8080/demo/purchases"
+curl "http://localhost:8080/demo/warehouses/001/purchases"
+```
+
+LLM sales preview endpoint:
+
+```bash
+curl "http://localhost:8080/demo/sales-preview"
+```
+
+For the LLM endpoint I used Ollama as the local example. The default URL is:
+
+```text
+http://localhost:11434/api/generate
+```
+
+The default model is:
+
+```text
+llama3.2
+```
+
+If Ollama is not running, the endpoint returns a short message that it could not
+call the LLM. This is expected.
+
+## Database setup
+
+Hibernate creates or updates the database tables because this setting is used:
+
+```properties
+spring.jpa.hibernate.ddl-auto=update
+```
+
+So normally I only need to create the database `example`. The tables are created
+by the application when it starts.
+
+The sample data is inserted by `SampleDataLoader`. It only inserts the data when
+the warehouse, product and purchase tables are empty.
+
+## Entities
+
+### User
+
+`User` is the entity from the Spring tutorial. It has:
+
+* `id`
+* `name`
+* `email`
+
+This part shows the basic MySQL tutorial.
+
+### DataWarehouse
+
+`DataWarehouse` stores one warehouse location.
+
+Important fields:
+
+* `warehouseID`
+* `warehouseName`
+* `warehouseAddress`
+* `warehousePostalCode`
+* `warehouseCity`
+* `warehouseCountry`
+* `timestamp`
+
+The warehouse ID is the primary key. Example: `001`.
+
+### Product
+
+`Product` stores one product in one warehouse.
+
+Important fields:
+
+* `productID`
+* `productName`
+* `productCategory`
+* `productQuantity`
+* `productUnit`
+* `warehouse`
+
+The product has a `ManyToOne` relation to `DataWarehouse`. This means many
+products can belong to one warehouse.
+
+### Purchase
+
+`Purchase` stores sold products.
+
+Important fields:
+
+* `id`
+* `purchaseTime`
+* `amount`
+* `location`
+* `warehouse`
+* `product`
+
+A purchase points to one warehouse and one product. This makes it possible to
+show where a product was sold and how many pieces were sold.
+
+## Relations between entities
+
+The important relation for the basic task is:
+
+```text
+DataWarehouse 1 ---- many Product
+```
+
+In Java this is written with:
+
+* `@OneToMany` in `DataWarehouse`
+* `@ManyToOne` in `Product`
+
+For purchases there are also relations:
+
+```text
+Product 1 ---- many Purchase
+DataWarehouse 1 ---- many Purchase
+```
+
+I used simple references in the `Purchase` entity for this.
+
+## Repositories
+
+The repositories extend `CrudRepository`. Spring creates the real code for them
+at runtime.
+
+### UserRepository
+
+Used for the old tutorial user example.
+
+### DataWarehouseRepository
+
+Used to save and read warehouses. The standard `CrudRepository` methods already
+include `findById`, `findAll`, `save` and delete methods.
+
+### ProductRepository
+
+Extra methods:
+
+```java
+Iterable<Product> findByWarehouseWarehouseID(String warehouseID);
+Optional<Product> findByWarehouseWarehouseIDAndProductID(String warehouseID, String productID);
+```
+
+These methods are used to get all products of one warehouse and one exact product
+inside one warehouse.
+
+### PurchaseRepository
+
+Extra method:
+
+```java
+Iterable<Purchase> findByWarehouseWarehouseID(String warehouseID);
+```
+
+This gets all purchases for one warehouse.
+
+## REST endpoints
+
+The controller uses `/demo` like in the Spring tutorial.
+
+| Method | URL | What it does |
+| --- | --- | --- |
+| POST | `/demo/add` | Adds a tutorial user |
+| GET | `/demo/all` | Shows all tutorial users |
+| GET | `/demo/warehouses` | Shows all warehouses |
+| GET | `/demo/warehouses/{warehouseID}` | Shows one warehouse with its products |
+| GET | `/demo/warehouses/{warehouseID}/products` | Shows products of one warehouse |
+| GET | `/demo/warehouses/{warehouseID}/products/{productID}` | Shows one product in one warehouse |
+| PUT | `/demo/warehouses/{warehouseID}` | Updates one warehouse |
+| GET | `/demo/products` | Shows all products |
+| GET | `/demo/purchases` | Shows all purchases |
+| GET | `/demo/warehouses/{warehouseID}/purchases` | Shows purchases of one warehouse |
+| GET | `/demo/sales-preview` | Sends sales data to a local Ollama LLM |
+
+## Sample data
+
+The application inserts:
+
+* 2 warehouse records
+* 10 product records
+* 260 purchase records
+
+The normal extended task asked for 30 sold product records. I inserted 260
+purchase records because the Vertiefung part asks for 250 to 300 training
+records. Together with the 10 products this gives 270 training records.
+
+The data is simple test data. The first warehouse is based on the example:
+
+```text
+001 - Linz Bahnhof
+```
+
+The second warehouse is:
+
+```text
+002 - Wien Lager Nord
+```
+
+The purchases are generated in a loop. Each product gets purchases on different
+days with different amounts.
+
+## What was changed from the original tutorial
+
+The original tutorial only had:
+
+* `User`
+* `UserRepository`
+* one controller with `/demo/add` and `/demo/all`
+
+I added:
+
+* `DataWarehouse`
+* `Product`
+* `Purchase`
+* repositories for the new entities
+* endpoints for warehouses, products and purchases
+* sample data loader
+* a small Ollama LLM endpoint for the sales preview
+* more project documentation in this README
+
+## ORM questions
+
+### 1. What is ORM and how is JPA used?
+
+ORM means Object Relational Mapping. It maps Java objects to database tables.
+Instead of writing SQL for every small thing, I can work with Java classes like
+`Product` or `DataWarehouse`.
+
+JPA is the Java standard for this. In this project Hibernate is the JPA provider.
+Spring Data JPA makes the repositories easier to use.
+
+### 2. What is application.properties used for and where must it be stored?
+
+`application.properties` stores settings for the Spring Boot app. In this project
+it stores the MySQL URL, username, password, driver and also the LLM settings.
+
+It must be stored here:
+
+```text
+src/main/resources/application.properties
+```
+
+### 3. Which annotations are often used for entity types?
+
+Common annotations are:
+
+* `@Entity`
+* `@Id`
+* `@GeneratedValue`
+* `@Column`
+* `@OneToMany`
+* `@ManyToOne`
+* `@JoinColumn`
+
+Important points:
+
+* every entity needs an ID
+* relations need the correct annotation on both sides if they are bidirectional
+* the entity needs a no-argument constructor
+* field names should match what the repository methods use
+
+### 4. What methods do you need for CRUD operations?
+
+From `CrudRepository` the important methods are:
+
+* `save`
+* `findById`
+* `findAll`
+* `deleteById`
+* `delete`
+* `count`
+* `existsById`
+
+Create and update both use `save`. If the ID already exists, it updates the
+record. If the ID is new, it inserts a new record.
+
+## Development log
+
+### Step 1
+
+I checked the existing project. It was still very close to the Spring MySQL
+tutorial. It had `User`, `UserRepository`, `MainController` and the MySQL
+settings.
+
+### Step 2
+
+I added the warehouse entity. I used `warehouseID` as the primary key because the
+assignment data already uses IDs like `001`.
+
+### Step 3
+
+I added the product entity and connected it to the warehouse entity with
+`@ManyToOne`. The warehouse has a list of products with `@OneToMany`.
+
+### Step 4
+
+I added the purchase entity for sold product records. It stores date/time, amount,
+location, product and warehouse.
+
+### Step 5
+
+I added repositories for the new entities. The product repository also has query
+methods for finding products inside one warehouse.
+
+### Step 6
+
+I added endpoints in the existing controller. I kept the old tutorial endpoints
+because they are still part of the assignment.
+
+### Step 7
+
+I added sample data. There are 2 warehouses, 10 products and 260 purchases.
+
+### Step 8
+
+I added a small LLM preview endpoint. It sends the sold amounts to Ollama. This
+needs Ollama to run locally.
+
+## Problems and issues
+
+One problem is that MySQL must already exist and the database `example` must be
+created before the app starts.
+
+Another problem is the Java version. This project uses Spring Boot 3, so a modern
+JDK is needed. The assignment says Java SDK 18 or higher.
+
+The relation between warehouse and product can create endless JSON output if both
+sides are printed again and again. I used Jackson annotations so the product does
+not print the warehouse again inside the warehouse response.
+
+The LLM part depends on Ollama. If Ollama is not installed or the model is not
+downloaded, the endpoint cannot create a real preview.
+
+## Fulfilled requirements
+
+Implemented:
+
+* Spring Boot MySQL tutorial user example
+* MySQL connection in `application.properties`
+* warehouse data model
+* product data model
+* relation between warehouse and product
+* purchase data model
+* 2 warehouse records
+* 10 product records
+* more than 30 purchase records
+* 250 to 300 training records
+* repository methods for warehouse/product lookup
+* update endpoint for a warehouse
+* local LLM endpoint using Ollama
+* ORM questions answered
+* development log
+* problems section
+
+## Still missing
+
+No cloud LLM like Gemini is included. I used the local Ollama option from the
+assignment instead.
+
+There are no automatic unit tests yet. The REST endpoints are listed above for
+manual testing.
+
+## Assumptions
+
+I assumed the database name should stay `example` because the tutorial and the
+old project already used it.
+
+I assumed the warehouse ID from the XML example is the same as the
+`datawarehouseID` mentioned later in the assignment.
+
+I assumed that using Ollama is enough for the LLM part, because the assignment
+says local LLMs are allowed.
